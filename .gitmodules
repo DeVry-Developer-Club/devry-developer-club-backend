@@ -1,0 +1,3 @@
+[submodule "devry-developer-frontend"]
+	path = devry-developer-frontend
+	url = https://github.com/DeVry-Developer-Club/devry-developer-frontend.git

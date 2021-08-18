@@ -1,0 +1,25 @@
+ version: "3.8"
+ 
+ 
+ services:
+    db:
+        image: mysql
+        restart: always
+        volumes:
+            - $(PWD)/data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: test
+           
+    
+    backend:
+        image: devry-developer-club-backend:$TAG
+        restart: always
+        depends_on:
+            - "db"
+            
+    frontend:
+        image: devry-developer-club-frontend:$TAG
+        restart: always
+        depends_on:
+            - "db"
+            - "backend"
