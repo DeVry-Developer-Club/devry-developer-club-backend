@@ -1,5 +1,5 @@
 # Setup
-[Back](../Readme.md)
+[Back](../../Readme.md)
 
 **Important to note**
 
@@ -56,4 +56,4 @@ MongoDb Community Server [download](https://fastdl.mongodb.org/windows/mongodb-w
     d. Default options for log/data directories
 3. When installation completes and it launches you should be able to hit the green connect button -- no need to enter anything into the connection string field.
 
-[Back](../Readme.md)
+[Back](../../Readme.md)

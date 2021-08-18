@@ -1,6 +1,6 @@
 # Process of work
 
-[Back](../Readme.md)
+[Back](../../Readme.md)
 
 In order to facilitate parallel work each bug fix or feature will be its own branch
 
@@ -80,4 +80,4 @@ it will get merged.
 If your work is not slated for a future release it will be labeled as "Ready for Next Release". Once the current
 release is cut - your PR will get merged.
 
-[Back](../Readme.md)
+[Back](../../Readme.md)

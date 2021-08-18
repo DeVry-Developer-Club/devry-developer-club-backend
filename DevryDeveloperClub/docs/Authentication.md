@@ -1,6 +1,6 @@
 Authentication
 -----
-[Back](../Readme.md)
+[Back](../../Readme.md)
 
 Pretty much every application these days require some sort of user tracking mechanism. 
 We currently have a very basic implementation of`Github` OAuth. Meaning you can sign in via Github!
@@ -17,4 +17,4 @@ dotnet user-secrets set "Github:ClientId" "insert id here"
 dotnet user-secrets set "Github:ClientSecret" "insert secret here"
 ```
 
-[Back](../Readme.md)
+[Back](../../Readme.md)

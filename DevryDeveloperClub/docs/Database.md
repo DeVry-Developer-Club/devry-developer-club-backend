@@ -1,5 +1,5 @@
 # Database
-[Back](../Readme.md)
+[Back](../../Readme.md)
 
 Since we leverage `EntityFrameworkCore` we can technically shift around to any `DbProvider` without modifying our code. Minus where we say
 `UseXYZ` in our `Infrastructure` project. 
@@ -100,4 +100,4 @@ public class MyNewService
 
 A controller belongs in the [Controllers](../Controllers) folder
 
-[Back](../Readme.md)
+[Back](../../Readme.md)
