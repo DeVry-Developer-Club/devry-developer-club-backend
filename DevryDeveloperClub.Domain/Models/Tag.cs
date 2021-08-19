@@ -14,10 +14,5 @@ namespace DevryDeveloperClub.Domain.Models
         /// Color to use on Front-end when displaying tag
         /// </summary>
         public string ColorValue { get; set; }
-
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode() + ColorValue.GetHashCode();
-        }
     }
 }
