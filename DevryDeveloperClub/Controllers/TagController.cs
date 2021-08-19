@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DevryDeveloperClub.Domain.Models;
 using DevryDeveloperClub.Infrastructure.Data;
-using DevryDeveloperClub.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DevryDeveloperClub.Controllers
 {
@@ -16,12 +14,10 @@ namespace DevryDeveloperClub.Controllers
     // localhost/api/tag
     public class TagController : ControllerBase
     {
-        private readonly IApplicationDbContext _context;
-        private readonly ITagService _service;
+        private readonly IBaseDbService<Tag> _service;
 
-        public TagController(IApplicationDbContext context, ITagService service)
+        public TagController(IBaseDbService<Tag> service)
         {
-            _context = context;
             _service = service;
         }
 
@@ -71,7 +67,7 @@ namespace DevryDeveloperClub.Controllers
         [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> Post(string name, string color)
         {
-            var result = await _service.Create(name, color);
+            var result = await _service.Create(new(){Name = name, ColorValue = color});
             return Ok(result.Value);
         }
         
@@ -81,7 +77,7 @@ namespace DevryDeveloperClub.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(string id, string name, string color)
         {
-            var result = await _service.Update(id, name, color);
+            var result = await _service.Update(new(){Id = id,Name = name,ColorValue = color});
 
             if (result.Success)
                 return Ok();
