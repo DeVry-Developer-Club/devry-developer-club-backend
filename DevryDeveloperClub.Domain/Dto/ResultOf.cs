@@ -17,8 +17,7 @@ namespace DevryDeveloperClub.Domain.Dto
         /// </summary>
         public int StatusCode { get; set; } = 200;
         
-        
-        public bool Success => Value != null && ErrorMessage == string.Empty;
+        public bool Success => ErrorMessage == string.Empty || StatusCode is >= 200 and <= 299;
 
         public static ResultOf<T> Failure(string errorMessage, int statusCode = 404)
             => new()

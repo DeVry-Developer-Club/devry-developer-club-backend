@@ -1,15 +1,10 @@
-using System;
-using UnofficialDevryIT.Architecture.Models;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DevryDeveloperClub.Domain.Models
 {
-    public class Tag : EntityWithTypedId<string>
+    public class Tag : EntityBase
     {
-        public Tag()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         /// <summary>
         /// Textual representation of tag
         /// </summary>

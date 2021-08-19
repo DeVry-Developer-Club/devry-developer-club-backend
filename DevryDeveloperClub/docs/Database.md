@@ -22,7 +22,7 @@ values are stored as `user secrets` meaning they ARE NOT PUT IN SOURCE CONTROL. 
 For your local environment you can run the following commands to set up your connection string!
 
 ```bash
-dotnet user-secrets set "Database:User" "whatever user you used during setup"
+dotnet user-secrets set "Database:User" "whatever user you used during setup" # such as root
 ```
 
 ```bash
@@ -32,29 +32,7 @@ dotnet user-secrets set "Database:Password" "whatever password you used during s
 ```bash
 # you might need to set a port (like localhost:1234 )
 # where 1234 = whichever port MongoDb is listening on
-dotnet user-secrets set "Database:Host" "localhost"
-```
-
-### Create Migration
-Migrations are essentially git-like source control for your data layer. They have up/down functionality that allows you to upgrade to a particular version of your code. 
-Conversely, downgrade to go back. This is useful in the event something didn't work in production so you want to revert whichever schema changes were applied.
-
-The name of your migration should be a short description of what you did i.e `AddedConfigModel`
-Make sure you run this from within the `DevryDeveloperClub` folder.
-
-```bash
-dotnet ef migrations add <name of your migration>
-```
-
-Once done, you should see your migration added to the [Migrations](../Migrations/) folder.
-
-At this point it is important to verify the generated migration looks okay PRIOR to running the next command. If needed
-you can delete this new migration, update code as necessary and run the above command again.
-
-If you are satisfied with the migration run the following to apply changes to your database.
-
-```bash
-dotnet ef database update
+dotnet user-secrets set "Database:Host" "localhost:27017"
 ```
 
 Production
@@ -62,33 +40,26 @@ Production
 
 A separate docker image is utilized in production. This should match the database type we're using during development. So if we're using MongoDb our image should be MongoDb.
 
-How to add to database (new entities)
+New Entities for Database
 -----
 1. Define the class(es) within the [Domain.Models](../../DevryDeveloperClub.Domain/Models/) portion of the project. Feel free to add subfolders for organizational purposes. Utilize existing entities as reference.
-2. New models will need to be added in two places.
-    [IApplicationDbContext](../../DevryDeveloperClub.Infrastructure/Data/IApplicationDbContext) and [ApplicationDbContext](../../DevryDeveloperClub.Infrastructure/Data/ApplicationDbContext). Following existing implementations --> you just add a new `DbSet<T>` where T is your new class!
 
 New Service/Controller
 -----
 If you need a reference to the database - our architecture leverages `Dependency Injection` or `DI`. This means within the constructor
-of your object you can specify all the things you need! Just make sure one of those items is [IApplicationDbContext](../../DevryDeveloperClub.Infrastructure/Data/IApplicationDbContext).
+of your object you can specify all the things you need! If you need to talk to the database you need to utilize [IBaseDbService](../../DevryDeveloperClub.Infrastructure/Data/IBaseDbService.cs). 
+If your service requires [Tag](../../DevryDeveloperClub.Domain/Models/Tag.cs) you will simply use
 
-Services are things that do a specific thing... they contain the business logic for our application. Meanwhile
-controllers are the endpoints of our application. AKA - the URL users go to in order to interact with our application.
-
-Please reference other items within the solution to see how this is done. An example is as follows
-
-Services belong in a folder called [Services](../Services)
 ```c#
 using DevryDeveloperClub.Infrastructure.Interfaces;
 
 public class MyNewService
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IBaseDbService<Tag> _service;
     
-    public MyNewService(IApplicationDbContext context)
+    public MyNewService(IBaseDbService<Tag> service)
     {
-        _context = context;
+        _service = service;
     }
     
     public Task MyAwesomeNewThing()
@@ -97,6 +68,13 @@ public class MyNewService
     }
 }
 ```
+
+Services are things that are geared towards a specified task... they contain the business logic for our application. Meanwhile
+controllers are the endpoints of our application. AKA - the URL users go to in order to interact with our application.
+
+Please reference other items within the solution to see how this is done. 
+
+Services belong in a folder called [Services](../Services)
 
 A controller belongs in the [Controllers](../Controllers) folder
 

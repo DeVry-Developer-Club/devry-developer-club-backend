@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using DevryDeveloperClub.Infrastructure;
-using DevryDeveloperClub.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,14 +20,12 @@ namespace DevryDeveloperClub
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddClubDatabase<Startup>(Configuration);
+            services.AddInfrastructure(Configuration);
             services.AddControllers();
-
-            services.AddScoped<ITagService, TagService>();
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DeVry Developer Club", Version = "v1" });
             });
         }
 
@@ -39,8 +36,7 @@ namespace DevryDeveloperClub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleApi v1"));
-
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DeVry Developer Club v1"));
             }
             else
             {
