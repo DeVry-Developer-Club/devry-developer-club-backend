@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml.XPath;
+using DevryDeveloperClub.Domain.Dto;
 using DevryDeveloperClub.Domain.Models;
 using DevryDeveloperClub.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -7,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace DevryDeveloperClub.Controllers
 {
     // TODO: Add Authentication 
-    
-    
+
     [ApiController]
     [Route("api/[controller]")]
     // localhost/api/tag
     public class TagController : ControllerBase
     {
         private readonly IBaseDbService<Tag> _service;
-
+        private const string InvalidDataMessage = "Invalid Data";
+        
         public TagController(IBaseDbService<Tag> service)
         {
             _service = service;
@@ -45,9 +47,13 @@ namespace DevryDeveloperClub.Controllers
         [HttpGet]
         [Route("find")]
         [ProducesResponseType(typeof(Tag), 200)]
+        [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest(InvalidDataMessage);
+            
             var result = await _service.Find(id);
 
             if (result.Value == null)
@@ -59,24 +65,31 @@ namespace DevryDeveloperClub.Controllers
         /// <summary>
         /// Create the 
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="color"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> Post(string name, string color)
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> Post(CreateTagDto model)
         {
-            var result = await _service.Create(new(){Name = name, ColorValue = color});
-            return Ok(result.Value);
+            if (string.IsNullOrEmpty(model.Name) || string.IsNullOrEmpty(model.Color))
+                return BadRequest(InvalidDataMessage);
+            
+            var result = await _service.Create(new(){Name = model.Name, ColorValue = model.Color});
+            return CreatedAtAction("Get", new { id = result.Value.Id }, result.Value.Id);
         }
         
         [HttpPut]
         [Route("update")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(string id, string name, string color)
         {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(color))
+                return BadRequest(InvalidDataMessage);
+            
             var result = await _service.Update(new(){Id = id,Name = name,ColorValue = color});
 
             if (result.Success)
@@ -91,10 +104,13 @@ namespace DevryDeveloperClub.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest(InvalidDataMessage);
+            
             var result = await _service.Delete(id);
 
             if (result.Success) 
-                return Ok();
+                return NoContent();
 
             return NotFound(result.ErrorMessage);
         }
