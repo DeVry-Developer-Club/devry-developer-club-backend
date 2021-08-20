@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DevryDeveloperClub.Controllers
 {
-    // TODO: Add Authentication 
-
     [ApiController]
     [Route("api/[controller]s")]
-    // localhost/api/tags
-    public class TagController : ApiController<Tag, CreateTagDto>
+    // localhost/api/projects
+    public class ProjectController : ApiController<Project, ProjectDto>
     {
-        public TagController(IBaseDbService<Tag> service) : base(service)
+        public ProjectController(IBaseDbService<Project> service) : base(service)
         {
         }
     }

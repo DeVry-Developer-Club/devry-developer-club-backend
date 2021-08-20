@@ -13,6 +13,6 @@ namespace DevryDeveloperClub.Domain.Models
         /// <summary>
         /// Color to use on Front-end when displaying tag
         /// </summary>
-        public string ColorValue { get; set; }
+        public string Color { get; set; }
     }
 }
