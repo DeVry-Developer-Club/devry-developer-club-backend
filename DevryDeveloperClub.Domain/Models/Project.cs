@@ -8,13 +8,8 @@ namespace DevryDeveloperClub.Domain.Models
     /// <summary>
     /// Represents a community project
     /// </summary>
-    public class Project : EntityWithTypedId<string>
+    public class Project : EntityBase
     {
-        public Project()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         /// <summary>
         /// Name of project
         /// </summary>
