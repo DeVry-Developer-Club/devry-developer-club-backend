@@ -28,15 +28,15 @@ The following naming conventions shall be followed:
 
 **Feature Issues** 
 ```
-Working on issue #1 (feature = f)
+Working on issue #1 (feature = feat)
 
-F1_GoogleOAuth
+feat_Google_OAuth
 ```
 
-**Bug Issues** - BF for bug fix
+**Bug Issues**
 ```
-Working on issue #3 (bug fix = bf)
-BF3_LinkedInClaims
+Working on issue #3 (bug fix = bug)
+bug_LinkedIn_Claims
 ```
 
 Feel free to commit your work as much as you want. When you're at a comfortable state
