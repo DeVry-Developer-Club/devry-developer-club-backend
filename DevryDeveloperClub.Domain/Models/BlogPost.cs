@@ -34,12 +34,10 @@ namespace DevryDeveloperClub.Domain.Models
         /// User ID of user who originally created post
         /// </summary>
         public string AuthorUserId { get; set; }
-        public IdentityUser AuthorUser { get; set; }
 
         /// <summary>
         /// User ID of user who modified post last
         /// </summary>
         public string ModifiedByUserId { get; set; }
-        public IdentityUser ModifiedByUser { get; set; }
     }
 }
