@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using DevryDeveloperClub.Infrastructure;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -75,11 +76,12 @@ namespace DevryDeveloperClub
             app.UseStaticFiles();
 
             app.UseRouting();
+
             
             // The order of this matters. Must be authenticated PRIOR to authorization to do things
             app.UseAuthentication();
             app.UseAuthorization();
-        
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
