@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DevryDeveloperClub.Domain.Dto
 {
-    public class BlogDTO
+    public class CreateBlogDto
     {
         [Required]
         public string Category { get; set; }

@@ -25,9 +25,5 @@ namespace DevryDeveloperClub.Domain.Models
         /// </summary>
         public string GithubLink { get; set; }
         
-        /// <summary>
-        /// List of members participating on project
-        /// </summary>
-        public List<IdentityUser> Contributors { get; set; } = new();
     }
 }

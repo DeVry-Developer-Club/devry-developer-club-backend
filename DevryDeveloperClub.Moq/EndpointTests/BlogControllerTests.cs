@@ -12,7 +12,7 @@ namespace DevryDeveloperClub.Moq.EndpointTests
     /// <summary>
     /// Tests CRUD operations against <see cref="BlogController"/>
     /// </summary>
-    public class BlogControllerTests : BaseControllerTest<BlogController, Blog, BlogDTO>
+    public class BlogControllerTests : BaseControllerTest<BlogController, Blog, CreateBlogDto>
     {
         /// <inheritdoc cref="BaseControllerTest{TController,TEntity,TEntityDto}"/>
         protected override List<Blog> CreateSampleData()
@@ -41,7 +41,7 @@ namespace DevryDeveloperClub.Moq.EndpointTests
             ServiceMock.Setup(x => x.Create(It.IsAny<Blog>()))
                 .ReturnsAsync(new ResultOf<Blog>());
             
-            var allInvalid = await (dynamic)Sut.Post(new BlogDTO());
+            var allInvalid = await (dynamic)Sut.Post(new CreateBlogDto());
 
             Assert.Equal(400, allInvalid.StatusCode);
             Assert.Equal(1, allInvalid.Value.Length);
