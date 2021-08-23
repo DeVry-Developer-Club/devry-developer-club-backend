@@ -27,9 +27,26 @@ curl -X POST "https://localhost:5001/api/Authenticate/auth"
     -H  "Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdFVzZXIiLCJqdGkiOiIyODZkNmM0Ny1iZTJlLTQzYjAtYTJlYy1jNjU0NTdlMTRkZmEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTYyOTUxNzIyMSwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.jnbNKK04bbNbHgcfcqQM6CipqeVS3s4AHa5u_q64smc"
 ```
 
+## OAuth 
+
+To connect using external providers (Github, Facebook, Google, etc) you need to register this application with the chosen provider(s).
+
+1. Request is made to Provider for authorization. This will prompt user to authenticate their account
+2. If authorized the user is redirected to the *redirect URI* while providing a temporary access token.
+3. You will require a permanent token, so you'll need to request it from the server in a subsequent call
+4. Once permanent access token is granted you can make other calls to the Provider's API to get the data you need/want.
+
+
+#### Important Information
+The callback path is misleading. It is not the path to a controller/action within the application. It just has to be the same registered in the 3rd party provider.
+By default it will be something like /signin-[provider name]. This callback handler is consumed by IdentityServer. The callback we're thinking of is actually
+set within the `ChallengeResult`. So if we set the CallbackPath and and Challenge(RedirectUrl) to be the same ASP.NET will error out because
+two handlers exist with the same name/route
+
+
 ### Github
-Until a streamlined process has been made -- reach out to a senior contributor to obtain
-the client secret and client id. Then run the following commands from within the `DevryDeveloperClub` project folder
+Reach out to a senior contributor to obtain the client secret and client id. 
+Then run the following commands from within the `DevryDeveloperClub` project folder
 
 ```bash
 dotnet user-secrets set "Github:ClientId" "insert id here"

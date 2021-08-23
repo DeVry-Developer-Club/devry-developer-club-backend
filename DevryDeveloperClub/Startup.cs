@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using DevryDeveloperClub.Infrastructure;
@@ -79,7 +80,7 @@ namespace DevryDeveloperClub
             // The order of this matters. Must be authenticated PRIOR to authorization to do things
             app.UseAuthentication();
             app.UseAuthorization();
-        
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
