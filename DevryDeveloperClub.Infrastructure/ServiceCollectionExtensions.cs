@@ -1,16 +1,14 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
-using AspNet.Security.OAuth.GitHub;
 using AspNetCore.Identity.Mongo;
 using AspNetCore.Identity.Mongo.Model;
+using DevryDeveloperClub.Domain.Models;
 using DevryDeveloperClub.Infrastructure.Data;
 using DevryDeveloperClub.Infrastructure.Extensions;
 using DevryDeveloperClub.Infrastructure.Options;
-using Microsoft.AspNetCore.Authentication;
+using DevryDeveloperClub.Infrastructure.Services;
+using DevryDeveloperClub.Infrastructure.Services.Default;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -39,8 +37,9 @@ namespace DevryDeveloperClub.Infrastructure
             // This allows you to use IDatabaseOptions to retrieve our "Database" section in appsettings.json
             services.AddSingleton<IDatabaseOptions>(x => x.GetRequiredService<IOptions<DatabaseOptions>>().Value);
             services.AddScoped(typeof(IBaseDbService<>), typeof(BaseDbService<>));
+            services.AddScoped<IJwtService, JwtService>();
 
-            services.AddIdentityMongoDbProvider<MongoUser>(options =>
+            services.AddIdentityMongoDbProvider<ClubMember, MongoRole<string>, string>(options =>
             {
 
             }, 
@@ -77,9 +76,11 @@ namespace DevryDeveloperClub.Infrastructure
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.ReturnUrlParameter = new PathString("/");
                     options.SaveTokens = true;
-
+                    options.Scope.Add("read:org");
+                    
                     options.Events = new OAuthEvents()
                     {
+                        // Within this ticket we must inject the access token into the header
                         OnCreatingTicket = async context =>
                         {
                             // Retrieve the github user
@@ -95,7 +96,6 @@ namespace DevryDeveloperClub.Infrastructure
                             response.EnsureSuccessStatusCode();
 
                             var user = JObject.Parse(await response.Content.ReadAsStringAsync());
-
                             context.AddGithubClaims(user);
                         }
                     };

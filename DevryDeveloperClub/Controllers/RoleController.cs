@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Mongo.Model;
+using DevryDeveloperClub.Domain.Models;
 using DevryDeveloperClub.Domain.ViewModels.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +17,11 @@ namespace DevryDeveloperClub.Controllers
     [Route("api/[controller]s")]
     public class RoleController : ControllerBase
     {
-        private readonly RoleManager<MongoRole> _roleManager;
-        private readonly UserManager<MongoUser> _userManager;
+        private readonly RoleManager<MongoRole<string>> _roleManager;
+        private readonly UserManager<ClubMember> _userManager;
         private readonly ILogger<RoleController> _logger;
 
-        public RoleController(RoleManager<MongoRole> roleManager, UserManager<MongoUser> userManager, ILogger<RoleController> logger)
+        public RoleController(RoleManager<MongoRole<string>> roleManager, UserManager<ClubMember> userManager, ILogger<RoleController> logger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -27,7 +29,7 @@ namespace DevryDeveloperClub.Controllers
         }
 
         [HttpGet]
-        public Task<List<MongoRole>> Get()
+        public Task<List<MongoRole<string>>> Get()
         {
             return Task.FromResult(_roleManager.Roles.ToList());
         }
@@ -44,7 +46,10 @@ namespace DevryDeveloperClub.Controllers
             if (role != null)
                 return BadRequest("Role already exists");
 
-            var result = await _roleManager.CreateAsync(new MongoRole(name));
+            role = new MongoRole<string>(name);
+            role.Id = Guid.NewGuid().ToString();
+            
+            var result = await _roleManager.CreateAsync(role);
             
             if(result.Succeeded)
                 return Ok();
@@ -64,7 +69,7 @@ namespace DevryDeveloperClub.Controllers
             if (user == null)
                 return BadRequest("Invalid user");
 
-            List<MongoRole> roles = new();
+            List<MongoRole<string>> roles = new();
             foreach (string roleId in model.Roles)
             {
                 var role = await _roleManager.FindByNameAsync(roleId);
@@ -96,7 +101,7 @@ namespace DevryDeveloperClub.Controllers
             if (user == null)
                 return BadRequest("Invalid User");
 
-            List<MongoRole> roles = new();
+            List<MongoRole<string>> roles = new();
             foreach (string roleId in model.Roles)
             {
                 var role = await _roleManager.FindByNameAsync(roleId);

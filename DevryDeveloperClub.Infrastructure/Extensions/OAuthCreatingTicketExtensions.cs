@@ -6,44 +6,28 @@ namespace DevryDeveloperClub.Infrastructure.Extensions
 {
     public static class OAuthCreatingTicketExtensions
     {
+        static void AddClaimIfExist(this OAuthCreatingTicketContext context, JObject user, string jsonKey, string claim, string valueType)
+        {
+            string value = user.Value<string>(jsonKey);
+            
+            if(!string.IsNullOrEmpty(value))
+                context.Identity.AddClaim(new Claim(
+                    claim, 
+                    value, 
+                    valueType, 
+                    context.Options.ClaimsIssuer));
+        }
+        
         public static void AddGithubClaims(this OAuthCreatingTicketContext context, JObject user)
         {
-            string identifier = user.Value<string>("id");
-
-            if (!string.IsNullOrEmpty(identifier))
-                context.Identity.AddClaim(new Claim(
-                    ClaimTypes.NameIdentifier,
-                    ClaimValueTypes.String,
-                    context.Options.ClaimsIssuer));
-
-            string username = user.Value<string>("login");
-            if(!string.IsNullOrEmpty(username))
-                context.Identity.AddClaim(new Claim(
-                    ClaimsIdentity.DefaultNameClaimType, username,
-                    ClaimValueTypes.String,
-                    context.Options.ClaimsIssuer
-                    ));
-
-            string name = user.Value<string>("name");
-            if(!string.IsNullOrEmpty(name))
-                context.Identity.AddClaim(new Claim(
-                    "urn:github:name", name,
-                    ClaimValueTypes.String,
-                    context.Options.ClaimsIssuer));
-
-            string link = user.Value<string>("url");
-            if(!string.IsNullOrEmpty(link))
-                context.Identity.AddClaim(new Claim(
-                    "urn:github:url", link,
-                    ClaimValueTypes.String, 
-                    context.Options.ClaimsIssuer));
-
-
-            string avatar = user.Value<string>("avatar");
-            if (!string.IsNullOrEmpty(avatar))
-                context.Identity.AddClaim(new Claim(
-                    "urn:github:avatar", avatar,
-                    ClaimValueTypes.String, context.Options.ClaimsIssuer));
+            context.AddClaimIfExist(user, "id", ClaimTypes.NameIdentifier, ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "login", ClaimsIdentity.DefaultNameClaimType, ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "name", "urn:github:name", ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "url", "urn:github:url", ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "avatar", "urn:github:avatar", ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "html_url", "urn:github:html_url", ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "organizations_url", "urn:github:organizations_url", ClaimValueTypes.String);
+            context.AddClaimIfExist(user, "email", "urn:github:email", ClaimValueTypes.String);
         }
     }
 }
