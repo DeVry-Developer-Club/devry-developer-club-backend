@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DevryDeveloperClub.Infrastructure.Data;
 using DevryDeveloperClub.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnofficialDevryIT.Architecture.Models;
 
@@ -19,7 +20,6 @@ namespace DevryDeveloperClub.Controllers
         public ApiController(IBaseDbService<TEntity> database)
         {
             Database = database;
-            
         }
 
         protected bool Validate<T>(T obj, out List<ValidationResult> results)
@@ -53,6 +53,7 @@ namespace DevryDeveloperClub.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("create")]
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(List<string>), 400)]
@@ -67,6 +68,7 @@ namespace DevryDeveloperClub.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("update")]
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(string), 400)]
@@ -89,6 +91,7 @@ namespace DevryDeveloperClub.Controllers
         }
         
         [HttpDelete]
+        [Authorize]
         [Route("delete")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

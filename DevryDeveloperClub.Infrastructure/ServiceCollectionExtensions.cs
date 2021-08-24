@@ -69,6 +69,37 @@ namespace DevryDeveloperClub.Infrastructure
                     };
                 })
                 .AddCookie()
+                .AddDiscord(options =>
+                {
+                    options.ClientId = configuration["Discord:ClientId"];
+                    options.ClientSecret = configuration["Discord:ClientSecret"];
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.SaveTokens = true;
+                    options.ReturnUrlParameter = new PathString("/");
+                    
+                    options.Events = new OAuthEvents
+                    {
+                        // Within this ticket we must inject the access token into the header
+                        OnCreatingTicket = async context =>
+                        {
+                            var request =
+                                new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
+
+                            request.Headers.Authorization =
+                                new AuthenticationHeaderValue("Bearer", context.AccessToken);
+
+                            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                            var response =
+                                await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                            response.EnsureSuccessStatusCode();
+
+                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                            context.AddDiscordClaims(user);
+                        }
+                    };
+                })
                 .AddGitHub(options =>
                 {
                     options.ClientSecret = configuration["Github:ClientSecret"];
@@ -76,9 +107,8 @@ namespace DevryDeveloperClub.Infrastructure
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.ReturnUrlParameter = new PathString("/");
                     options.SaveTokens = true;
-                    options.Scope.Add("read:org");
                     
-                    options.Events = new OAuthEvents()
+                    options.Events = new OAuthEvents
                     {
                         // Within this ticket we must inject the access token into the header
                         OnCreatingTicket = async context =>
